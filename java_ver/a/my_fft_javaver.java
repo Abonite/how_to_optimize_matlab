@@ -15,9 +15,9 @@ public class my_fft_javaver {
         Complex[] zeros = new Complex[this.N - source_codes.length];
         Arrays.fill(zeros, new Complex(0.0, 0.0));
         
-        ArrayList temp_bfv = new ArrayList<Complex>(Arrays.asList(source_codes));
-        temp_bfv.addAll(Arrays.asList(zeros));
-        this.before_fft_vector = temp_bfv.toArray();
+        this.before_fft_vector = new Complex[this.N];
+        System.arraycopy(source_codes, 0, this.before_fft_vector, 0, source_codes.length);
+        System.arraycopy(zeros, 0, this.before_fft_vector, source_codes.length, zeros.length);
     }
 
     my_fft_javaver(Complex[] source_codes, int fft_pointer) {
@@ -35,9 +35,11 @@ public class my_fft_javaver {
         }
 
         Complex[] zeros = new Complex[this.N - source_codes.length];
-        ArrayList temp_bfv = new ArrayList<Complex>(Arrays.asList(source_codes));
-        temp_bfv.addAll(Arrays.asList(zeros));
-        this.before_fft_vector = (Complex[]) temp_bfv.toArray();
+        Arrays.fill(zeros, new Complex(0.0, 0.0));
+
+        this.before_fft_vector = new Complex[this.N];
+        System.arraycopy(source_codes, 0, this.before_fft_vector, 0, source_codes.length);
+        System.arraycopy(zeros, 0, this.before_fft_vector, source_codes.length, zeros.length);
     }
 
     public Complex[] do_fft() {
@@ -51,7 +53,7 @@ public class my_fft_javaver {
             int gap = (int) Math.pow(2.0, (double) i);
             int sub_l = (int) Math.pow(2.0, (double) (i + 1));
             for (int j = 0; j < N; j += gap) {
-                Complex[] temp = this.subo(Arrays.copyOfRange(middle_vectory, j, j + sub_l), gap);
+                Complex[] temp = this.subo(middle_vectory[j, j + sub_l - 1], gap);
                 for (int k = 0; k < gap; k++) {
                     middle_vectory[j + k] = temp[k];
                 }
@@ -66,8 +68,8 @@ public class my_fft_javaver {
     }
 
     private int[] bit_reverse() {
-        int[] index_bin_rev_seq = new int[this.fft_layer];
-        for (int i = 0; i < Math.pow(2.0, (double) this.fft_layer); i++) {
+        int[] index_bin_rev_seq = new int[(int) Math.pow(2.0, (double) this.fft_layer)];
+        for (int i = 0; i < (int) Math.pow(2.0, (double) this.fft_layer); i++) {
             int temp = 0;
             for (int j = 0; j < this.fft_layer; j++) {
                 temp |= ((i >> j) & 1) << (this.fft_layer - 1 - j);
@@ -84,13 +86,21 @@ public class my_fft_javaver {
         int N = 2 * gap;
         for (int i = 0; i < loop_t; i++) {
             Complex W = new Complex(N, -i * 2 * Math.PI / N, false);
-            butterfly btfl = new butterfly(W);
-            Complex i_a = source_pints[i];
-            Complex i_b = source_pints[i + gap];
-            Complex[] out = btfl.operate(i_a, i_b);
+            Complex[] out = this.butterfly(source_pints[i], source_pints[i + gap], W);
             result[i] = out[0];
             result[i + gap] = out[1];
         }
+        return result;
+    }
+
+    private Complex[] butterfly(Complex i1, Complex i2, Complex W) {
+        Complex[] result = new Complex[2];
+        W.Mul(i2);
+
+        result[0] = i1;
+        result[1] = i1;
+        result[1].Add(i2);
+        result[0].Min(i2);
         return result;
     }
 }
