@@ -8,7 +8,7 @@ public class my_fft_javaver {
 
     double log2 = Math.log(2);
 
-    my_fft_javaver(Complex[] source_codes) {
+    public my_fft_javaver(Complex[] source_codes) {
         this.fft_layer = (int) Math.ceil(this.log2(source_codes.length));
         this.N = (int) Math.pow(2.0, (double) this.fft_layer);
         Complex[] zeros = new Complex[this.N - source_codes.length];
@@ -19,7 +19,7 @@ public class my_fft_javaver {
         System.arraycopy(zeros, 0, this.before_fft_vector, source_codes.length, zeros.length);
     }
 
-    my_fft_javaver(Complex[] source_codes, int fft_pointer) {
+    public my_fft_javaver(Complex[] source_codes, int fft_pointer) {
         if (fft_pointer < source_codes.length) {
             System.out.println("Error: the second parameter should be 1");
             return;

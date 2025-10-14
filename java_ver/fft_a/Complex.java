@@ -14,7 +14,7 @@ public class Complex {
      * @param b is radian or imag
      * @param ccs tells java how to resolution the parameters
      */
-    Complex(double a, double b, boolean ccs) {
+    public Complex(double a, double b, boolean ccs) {
         if (ccs) {
             this.real = a;
             this.imag = b;
@@ -80,5 +80,13 @@ public class Complex {
     @Override
     public String toString() {
         return "Complex[real = " + this.real + ", imag = " + this.imag + "]";       
+    }
+
+    public double getReal() {
+        return this.real;
+    }
+
+    public double getImag() {
+        return this.imag;
     }
 }
