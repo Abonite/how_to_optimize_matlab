@@ -1,5 +1,4 @@
 import java.lang.Math;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class my_fft_javaver {
@@ -52,9 +51,9 @@ public class my_fft_javaver {
         for (int i = 0; i < this.fft_layer; i++) {
             int gap = (int) Math.pow(2.0, (double) i);
             int sub_l = (int) Math.pow(2.0, (double) (i + 1));
-            for (int j = 0; j < N; j += gap) {
-                Complex[] temp = this.subo(middle_vectory[j, j + sub_l - 1], gap);
-                for (int k = 0; k < gap; k++) {
+            for (int j = 0; j < N; j += (2 * gap)) {
+                Complex[] temp = this.subo(Arrays.copyOfRange(middle_vectory, j, j + sub_l), gap);
+                for (int k = 0; k < sub_l; k++) {
                     middle_vectory[j + k] = temp[k];
                 }
             }
@@ -85,7 +84,7 @@ public class my_fft_javaver {
         Complex[] result = new Complex[source_pints.length];
         int N = 2 * gap;
         for (int i = 0; i < loop_t; i++) {
-            Complex W = new Complex(N, -i * 2 * Math.PI / N, false);
+            Complex W = new Complex(1.0, (double) -i * 2.0 * Math.PI / (double) N, false);
             Complex[] out = this.butterfly(source_pints[i], source_pints[i + gap], W);
             result[i] = out[0];
             result[i + gap] = out[1];
@@ -97,10 +96,10 @@ public class my_fft_javaver {
         Complex[] result = new Complex[2];
         W.Mul(i2);
 
-        result[0] = i1;
-        result[1] = i1;
-        result[1].Add(i2);
-        result[0].Min(i2);
+        result[0] = new Complex(i1.real, i1.imag);
+        result[1] = new Complex(i1.real, i1.imag);
+        result[0].Add(W);
+        result[1].Min(W);
         return result;
     }
 }
