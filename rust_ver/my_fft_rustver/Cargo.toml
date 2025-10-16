@@ -1,0 +1,5 @@
+[lib]
+name = "my_fft_rustvar"
+crate-type = ["cdylib"]
+
+[dependencies]

@@ -1,1 +1,7 @@
 *.class
+*.obj
+*.ilk
+*.pdb
+*.exe
+CONOUT$
+target/
