@@ -7,6 +7,13 @@
         "Complex.h": "c",
         "Complex.c": "c",
         "my_fft_cver.c": "c",
-        "test.c": "c"
+        "test.c": "c",
+        "stdio.h": "c",
+        "iterator": "c",
+        "initializer_list": "c",
+        "utility": "c",
+        "xstring": "c",
+        "xutility": "c",
+        "cmath": "c"
     }
 }
