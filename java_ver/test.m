@@ -1,6 +1,8 @@
 clear all;
+%把jar包加入matlab的搜索路径
 javaaddpath("./fft_a.jar");
 
+%使用java的方式创建复数序列
 java_complex_vector = [];
 for i = 1:1024
     java_complex_vector = [java_complex_vector; Complex(i, 0, true)];
