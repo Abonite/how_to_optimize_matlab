@@ -6,7 +6,7 @@ function out_points = subo(source_points, gap)
     %输出点数则与输入点数相同
     out_points = zeros(length(source_points), 1);
     %本次计算的点数？
-    N = 2 * gap;
+    N = length(source_points);
     for l = 1:loop_t
         %按图索骥，k应该从0开始，这里是从1开始的，要减去1
         k = l - 1;

@@ -1,48 +1,20 @@
 % “符号体系”
 %个人经验
-function after_fft_vectory = my_fft(varargin)
-    %需求：
-    %   输入的点数为列向量复数
-    %   可以输入1或2个参数。第一个参数是列向量，第二个是指定的点数
-    %   当仅输入一个参数的时候，不足2的幂次的列向量默认在结尾补0到2的幂次
-    %   当输入两个参数的时候，默认将列向量补足到指定点数；要求指定点数必须
-    %   是一个大于等于列向量长度的2的幂次数
-    if length(varargin) == 1
-        before_fft_vectory = varargin{1, 1};
-        % fft的点数信息隐含在输入序列中，也就是长度
-        N = length(before_fft_vectory);
-        % 对长度取log2，向上取整，作为fft层数。fft层数不能是小数，遇到非2的幂次
-        % 的数字要补数据所以向上取整
-        %如何调用函数？如何使用函数的结果？
-        %这里对应了第五条规则
-        fft_layer = ceil(log2(N));
-        % 重新计算点数N，保证点数足够
-        N = 2 ^ fft_layer;
-        % 默认不足时补0到2的幂次
-        before_fft_vectory = [before_fft_vectory; zeros(N - length(before_fft_vectory), 1)];
-    elseif length(varargin) == 2
-        before_fft_vectory = varargin{1, 1};
-        N = varargin{1, 2};
-        %判断长度是否足够
-        if N < length(before_fft_vectory)
-            error('N is less then the length of vector');
-        end
-        %计算层数
-        fft_layer = log2(N);
-        %判断取整后和没有取整的数字是否一致（有没有小数部分）
-        %如果有小数部分（也就是等式不成立），就证明数字N不是2的幂次
-        if fft_layer ~= floor(fft_layer)
-            error('N must be a power of 2');
-        end
-        %按照需要补0
-        before_fft_vectory = [before_fft_vectory; zeros(N - length(before_fft_vectory), 1)];
-    else
-        %如果输入参数太多，就报错
-        error('Too much input arguments')
-    end
+function after_fft_vectory = my_fft(source_points)
+    % fft的点数信息隐含在输入序列中，也就是长度
+    N = length(source_points);
+    % 对长度取log2，向上取整，作为fft层数。fft层数不能是小数，遇到非2的幂次
+    % 的数字要补数据所以向上取整
+    %如何调用函数？如何使用函数的结果？
+    %这里对应了第五条规则
+    fft_layer = ceil(log2(N));
+    % 重新计算点数N，保证点数足够
+    N = 2 ^ fft_layer;
+    % 默认不足时补0到2的幂次
+    source_points = [source_points; zeros(N - length(source_points), 1)];
 
     %对输入进行比特逆序，对应ppt第二条规则：输入索引要比特逆序
-    middle_vectory = before_fft_vectory(bin_rev(N, fft_layer), 1);
+    temp_vec = source_points(bin_rev(N, fft_layer), 1);
 
     %依层计算
     for i = 1:fft_layer
@@ -60,10 +32,10 @@ function after_fft_vectory = my_fft(varargin)
         %subo:sub_operation
         %这里对应了ppt中的第六和第七条规则
         for j = 1:(2 * gap):N
-            middle_vectory(j:j + sub_l, 1) = subo(middle_vectory(j:j + sub_l, 1), gap);
+            temp_vec(j:j + sub_l, 1) = subo(temp_vec(j:j + sub_l, 1), gap);
         end
     end
 
     %这里对应了ppt中的第一条规则
-    after_fft_vectory = middle_vectory;
+    after_fft_vectory = temp_vec;
 end
