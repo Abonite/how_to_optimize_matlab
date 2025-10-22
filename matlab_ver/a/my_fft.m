@@ -7,6 +7,8 @@ function after_fft_vectory = my_fft(source_points)
     % 的数字要补数据所以向上取整
     %如何调用函数？如何使用函数的结果？
     %这里对应了第五条规则
+    % temp = log2(N);
+    % fft_layer = ceil(temp);
     fft_layer = ceil(log2(N));
     % 重新计算点数N，保证点数足够
     N = 2 ^ fft_layer;
@@ -14,7 +16,15 @@ function after_fft_vectory = my_fft(source_points)
     source_points = [source_points; zeros(N - length(source_points), 1)];
 
     %对输入进行比特逆序，对应ppt第二条规则：输入索引要比特逆序
-    temp_vec = source_points(bin_rev(N, fft_layer), 1);
+    % rev_index_seq = bitrevorder(org_index_seq) + 1;
+    % temp_vec = zeros(N, 1);
+    % for i = 1:N
+    %     reved_ind = rev_index_seq(i, 1);
+    %     temp_vec(i, 1) = source_points(reved_ind, 1);
+    % end
+    org_index_seq = 0:(N - 1);
+    rev_index_seq = bitrevorder(org_index_seq) + 1;
+    temp_vec = source_points(rev_index_seq, 1);
 
     %依层计算
     for i = 1:fft_layer
